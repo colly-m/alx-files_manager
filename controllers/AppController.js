@@ -1,20 +1,21 @@
 const redisUtils = require('../utils/redis');
 const dbUtils = require('../utils/db');
 
+
 class AppController {
   static async getStatus(req, res) {
-    const redisAlive = await redisUtils.isRedisAlive();
-    const dbAlive = await dbUtils.isDbAlive();
-    
-    res.status(200).json({ redis: redisAlive, db: dbAlive });
+    const redisStatus = redisUtils.isAlive();
+    const dbStatus = dbUtils.isAlive();
+    response.set('Content-Type', 'application/json');
+    response.status(200).json({ redis: redisStatus, db: dbStatus }).end();
   }
 
   static async getStats(req, res) {
-    const usersCount = await dbUtils.getUsersCount();
-    const filesCount = await dbUtils.getFilesCount();
-    
-    res.status(200).json({ users: usersCount, files: filesCount });
+    const users = await dbUtils.nbUsers();
+    const files = await dbUtils.nbFiles();
+    response.set('Content-Type', 'application/json');
+    response.status(200).json({ users, files }).end();
   }
 }
 
-module.exports = AppController;
+export default AppController;
