@@ -1,4 +1,4 @@
-import { MongoClient } from require('mongodb');
+import { MongoClient } from 'mongodb';
 
 class DBClient {
   constructor() {
