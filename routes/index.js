@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-const router = express.Router();
+const router = Router();
 const AppController = require('../controllers/AppController');
 
 router.get('/status', AppController.getStatus);
