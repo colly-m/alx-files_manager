@@ -185,6 +185,44 @@ class FilesController {
     const updatedFileDocument = await db.collection('files').findOne({ _id: new dbClient.ObjectID(fileId), userId });
     return res.status(200).json(updatedFileDocument);
   }
+
+  static async getFile(req, res) {
+    const fileId = req.params.id;
+
+    const db = await dbUtils.connectDB();
+    const fileDocument = await db.collection('files').findOne({ _id: new dbClient.ObjectID(fileId) });
+
+    if (!fileDocument) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    const token = req.headers['x-token'];
+    if (!fileDocument.isPublic) {
+      if (!token) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+
+      const key = `auth_${token}`;
+      const userId = await redisClient.get(key);
+
+      if (!userId || fileDocument.userId.toString() !== userId.toString()) {
+        return res.status(404).json({ error: 'Not found' });
+      }
+    }
+
+    if (fileDocument.type === 'folder') {
+      return res.status(400).json({ error: "A folder doesn't have content" });
+    }
+
+    const filePath = fileDocument.localPath;
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Not found' });
+    }
+
+    const mimeType = mime.lookup(fileDocument.name);
+    res.setHeader('Content-Type', mimeType);
+    fs.createReadStream(filePath).pipe(res);
+  }
 }
 
 module.exports = FilesController;
