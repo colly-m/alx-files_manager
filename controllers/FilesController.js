@@ -170,7 +170,7 @@ class FilesController {
 
     const fileId = req.params.id;
 
-    const db = await dbUtils.connectDB();
+    const db = await dbClient.connectDB();
     const fileDocument = await db.collection('files').findOne({ _id: new dbClient.ObjectID(fileId), userId });
 
     if (!fileDocument) {
