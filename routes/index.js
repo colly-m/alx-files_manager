@@ -6,6 +6,29 @@ const UsersController = require('../controllers/UsersController');
 const AuthController = require('../controllers/AuthController');
 const FilesController = require('../controllers/FilesController');
 
+router.use((req, res, next) => {
+  const paths = ['/connect'];
+  if (!paths.includes(req.path)) {
+    next();
+  } else if (!request.headers.authorization) {
+    res.status(401).json({ error: 'Unauthorized' }).end();
+  } else {
+    next();
+  }
+});
+
+router.use((req, res, next) => {
+  const paths = ['/disconnect', '/users/me', '/files'];
+  if (!paths.includes(req.path)) {
+    next();
+  } else if (!req.headers['x-token']) {
+    res.status(401).json({ error: 'Unauthorized' }).end();
+  } else {
+    next();
+  }
+});
+
+
 router.get('/status', AppController.getStatus);
 router.get('/stats', AppController.getStats);
 router.post('/users', UsersController.postNew);

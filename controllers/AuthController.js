@@ -1,9 +1,10 @@
-const crypto = require('crypto');
-const { v4: uuidv4 } = require('uuid');
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+import crypto from 'crypto';
+import UtilController from './UtilController';
+import v4: uuidv4 from 'uuid';
+import redisClient from '../utils/redis';
+import dbClient from '../utils/db';
 
-class AuthController {
+export class AuthController {
   static async getConnect(request, result) {
     const authHeader = request.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Basic ')) {

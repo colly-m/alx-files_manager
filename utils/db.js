@@ -1,5 +1,5 @@
 import { env } from 'process';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 class DBClient {
   constructor() {
@@ -32,6 +32,37 @@ class DBClient {
     const db = this.client.db(this.dbName);
     const filesCollection = db.collection('files');
     return filesCollection.countDocuments();
+  }
+
+  async userExists(email) {
+    const db = this.client.db();
+    const filesCollection = db.collection('users');
+    return filesCollection.findOne({ email });
+  }
+
+  async newUser(email, passwordHash) {
+    const db = this.client.db();
+    const filesCollection = db.collection('users');
+    return filesCollection.insertOne({ email, passwordHash });
+  }
+
+  async filterUser(filters) {
+    const db = this.client.db();
+    const filesCollection = db.collection('users');
+    if ('_id' in filters) {
+      filters._id = ObjectId(filters._id);
+    }
+    return filesCollection.findOne(filters);
+  }
+
+  async filterFiles(filters) {
+    const db = this.client.db();
+    const filesCollection = db.collection('files');
+    const idFilters = ['_id', 'userId', 'parentId'].filter((prop) => prop in filters && filters[prop] !== '0');
+    idFilters.forEach((i) => {
+      filters[i] = ObjectId(filters[i]);
+    });
+    return filesCollection.findOne(filters);
   }
 }
 
