@@ -1,8 +1,10 @@
+import dbClient from '../utils/db';
+import UtilController from './UtilController';
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+
 
 class FilesController {
   static async postUpload(req, res) {
