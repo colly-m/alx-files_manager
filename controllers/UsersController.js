@@ -1,6 +1,6 @@
-const crypto = require('crypto');
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
+import crypto from 'crypto';
+import redisClient from '../utils/redis';
+import dbClient from '../utils/db';
 
 class UsersController {
   static async postNew(req, res) {
@@ -14,8 +14,7 @@ class UsersController {
       return res.status(400).json({ error: 'Missing password' });
     }
 
-    const db = await dbClient.connectDB();
-    const user = await db.collection('users').findOne({ email });
+    const user = await dbClient.collection('users').findOne({ email });
 
     if (user) {
       return res.status(400).json({ error: 'Already exist' });
@@ -36,4 +35,4 @@ class UsersController {
     response.status(200).json(usr).end();
 }
 
-module.exports = UsersController;
+export default UsersController;
