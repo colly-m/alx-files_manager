@@ -1,15 +1,12 @@
 import express from 'express';
-const bodypParser = require('body-parser');
-const routes = require('./routes/index');
+import { env } from 'process';
+
+const mainRoute = require('./routes/index');
 
 const app = express();
-const port = process.env.PORT || 5000;
-
-app.use(bodyParser.json());
-app.use('/', routes);
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+const port = env.PORT || 5000;
+app.use(express.json());
+app.use(mainRoute);
+app.listen(port, '127.0.0.1');
 
 export default app;
